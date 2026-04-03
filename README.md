@@ -29,17 +29,24 @@ your-project/
 
 It never guesses. It asks first.
 
-## Install
+## Install — 10 seconds
 
-Add the marketplace:
+Open Claude Code and paste this:
+
+> Install bitfrog-harness-init: run **`git clone --single-branch --depth 1 https://github.com/rainyulei/bitfrog-harness-init.git ~/.claude/skills/bitfrog-harness-init`** then tell me it's ready and I can use `/bitfrog-harness-init` in any project.
+
+That's it. Claude clones the skill and you're good to go.
+
+### Add to your repo so teammates get it (optional)
+
+> Add bitfrog-harness-init to this project: run **`mkdir -p .claude/skills && cp -Rf ~/.claude/skills/bitfrog-harness-init .claude/skills/bitfrog-harness-init && rm -rf .claude/skills/bitfrog-harness-init/.git`** then tell me it's ready.
+
+Files get committed to your repo. `git clone` just works for teammates.
+
+### Alternative: plugin marketplace
 
 ```
 /plugin marketplace add rainyulei/bitfrog-harness-init
-```
-
-Install the plugin:
-
-```
 /plugin install bitfrog-harness-init@rainyulei-bitfrog-harness-init
 ```
 
