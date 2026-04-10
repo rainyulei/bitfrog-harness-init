@@ -1,0 +1,29 @@
+{
+  "date": "2026-04-09",
+  "window": "7d",
+  "metrics": {
+    "commits": 4,
+    "contributors": 1,
+    "prs_merged": 0,
+    "insertions": 898,
+    "deletions": 164,
+    "net_loc": 734,
+    "test_loc": 0,
+    "test_ratio": 0,
+    "active_days": 2,
+    "sessions": 2,
+    "deep_sessions": 0,
+    "avg_session_minutes": 5,
+    "loc_per_session_hour": 0,
+    "feat_pct": 0.75,
+    "fix_pct": 0,
+    "peak_hour": 22,
+    "ai_assisted_commits": 0
+  },
+  "authors": {
+    "rainyulei": { "commits": 4, "insertions": 898, "deletions": 164, "test_ratio": 0, "top_area": "SKILL.md" }
+  },
+  "version_range": ["initial", "v3"],
+  "streak_days": 0,
+  "tweetable": "Week of Apr 3: 4 commits, 898 LOC, shipped bitfrog-harness-init plugin initial release + v3 refactor | Solo"
+}
