@@ -3,7 +3,7 @@
     {
       "name": "bitfrog-harness-init",
       "description": "One command to make any repo agent-ready. Brainstorms your project, then generates minimal harness engineering config.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "source": "."
     }
   ]

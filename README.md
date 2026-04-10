@@ -8,16 +8,27 @@ One command to make any repo agent-ready.
 
 ```
 your-project/
-├── CLAUDE.md                      # AI workbook — project structure, module boundaries, test strategy, workflows
-├── Plans.md                       # Development plan
-├── feedback-log.md                # Error log — 3 similar issues → new rule
+├── CLAUDE.md                      # Root pointer table — project goal + skeleton index
+├── feedback-log.md                # Deep feedback log — 3 similar → new rule/hook
 ├── .claude/
-│   ├── settings.json              # Hooks — auto-detect boundary violations, block sensitive files, pre-commit verify
+│   ├── settings.json              # Hooks (5 skeleton + N business)
+│   ├── rules/                     # 11 rule files (methodology + constraints)
+│   │   ├── workflow.md            # First action + flow + compact protocol
+│   │   ├── brainstorm.md          # Dynamic action pool + exit conditions
+│   │   ├── plan.md                # Plan format + 11-step task structure
+│   │   ├── review.md              # Two-stage review loop
+│   │   ├── verify.md              # 5-step evidence gate
+│   │   └── ...                    # + feedback, subagent, modules, memory, docs, worktree
 │   ├── agents/
-│   │   ├── worker.md              # Dev agent — test-first, feedback loop, forbidden actions
-│   │   └── reviewer.md            # Review agent — read-only, PASS/FAIL with grep commands
+│   │   ├── worker.md              # Implementer with 4-status reporting
+│   │   ├── reviewer-spec.md       # Stage-1: spec compliance + doc sync
+│   │   ├── reviewer-quality.md    # Stage-2: code quality + doc red lines
+│   │   └── docs.md                # Large-scale doc refactor executor
+│   ├── plans/                     # Plan files (git tracked, movable contracts)
+│   ├── state/
+│   │   └── session.md             # Compact-safe scratchpad (gitignored)
 │   └── memory/
-│       └── decisions.md           # Architecture decisions — auto-loaded each session
+│       └── decisions.md           # 3-tier: Architectural / Operational / Learned
 ```
 
 ## How it works
@@ -74,13 +85,29 @@ Harness Engineering is the third layer — it's not about making AI smarter, it'
 
 This plugin generates the harness layer for your project.
 
+## What's New in v4 (2026-04-10)
+
+- **Dynamic brainstorm mode** — exit-condition driven, no fixed question lists
+- **Plan as movable contract** — `.claude/plans/*.md` + compact-safe session state
+- **Two-stage review loop** — reviewer-spec + reviewer-quality, mandatory order
+- **Doc management layer** — code changes must sync docs, violations = MAJOR FAIL
+- **Memory three-tier layering** — architectural / operational / learned
+- **Worktree infrastructure** — isolation for large changes with baseline verification
+- **Information architecture** — root CLAUDE.md becomes a pointer table, rules split into `.claude/rules/*.md`
+- **Upgrade mode** — 7-step flow preserving skeleton layer, rewriting business layer only
+
+See [design spec](docs/superpowers/specs/2026-04-10-bitfrog-v4-design.md) for details.
+
 ## Principles
 
 - **Brainstorm first** — won't generate config until it understands your project
-- **Respect existing config** — extends your CLAUDE.md, merges into settings.json
+- **Respect existing config** — upgrade mode preserves skeleton layer and history
 - **Minimal viable harness** — no rules the project doesn't need
 - **Hook errors must be useful** — what was violated → why the rule exists → how to fix
 - **Evolution over perfection** — start simple, feedback-log drives improvements
+- **First action is mandatory** — always restate + check understanding before coding
+- **Documents are compact-safe source of truth** — AI relies on files, not conversation memory
+- **Selective integration** — absorb good parts of superpowers, skip ceremony
 
 ## Reference implementation
 
