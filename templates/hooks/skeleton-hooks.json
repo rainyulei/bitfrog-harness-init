@@ -1,0 +1,69 @@
+{
+  "_comment": "bitfrog v4 skeleton hooks — 5 条骨架层 hooks(升级时保留不动)",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "_name": "Hook 1: 敏感文件拦截",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "FILE=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"\nif echo \"$FILE\" | grep -qE '\\.(env|pem|key|secret|credentials)$'; then\n  echo '[BLOCKED] 敏感文件禁止 AI 修改' >&2\n  echo '原因: 防止泄露密钥和凭证' >&2\n  echo '修复: 手动编辑该文件' >&2\n  exit 1\nfi",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "_name": "Hook 2: git commit 前 verify(项目 verify 命令填入)",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "cd {项目绝对路径} && {verify 命令} 2>&1",
+            "timeout": 120,
+            "statusMessage": "提交前验证"
+          }
+        ]
+      },
+      {
+        "_name": "Hook 3: git commit 前 review 通过检查",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "SESSION='.claude/state/session.md'\nif [ ! -f \"$SESSION\" ]; then exit 0; fi\nTASK=$(grep -E '^Current task:' \"$SESSION\" | head -1 | sed 's/.*: //')\nif [ -z \"$TASK\" ] || [ \"$TASK\" = '(none)' ]; then exit 0; fi\nif ! grep -qE \"task ${TASK}.*spec: approved\" \"$SESSION\"; then\n  echo '[BLOCKED] 当前 task 的 spec compliance review 未通过' >&2\n  echo '原因: 必须先 dispatch reviewer-spec 通过才能 commit' >&2\n  echo '修复: 按 rules/review.md 跑 two-stage review' >&2\n  exit 1\nfi\nif ! grep -qE \"task ${TASK}.*quality: approved\" \"$SESSION\"; then\n  echo '[BLOCKED] 当前 task 的 code quality review 未通过' >&2\n  echo '原因: spec 通过后必须 dispatch reviewer-quality' >&2\n  exit 1\nfi",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "_name": "Hook 4: git worktree add 前 ignore 验证",
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git worktree add*)",
+            "command": "CMD=\"$CLAUDE_TOOL_INPUT\"\nTARGET=$(echo \"$CMD\" | grep -oE 'git worktree add [^ ]+' | awk '{print $4}' | xargs dirname)\nif [ -z \"$TARGET\" ] || [ \"$TARGET\" = '.' ]; then exit 0; fi\nif ! git check-ignore -q \"$TARGET\" 2>/dev/null; then\n  echo \"[BLOCKED] worktree 目标目录 $TARGET 未被 .gitignore ignore\" >&2\n  echo '原因: 防止 worktree 内容污染主仓库' >&2\n  echo \"修复: echo '$TARGET/' >> .gitignore && git add .gitignore && git commit -m 'chore: ignore $TARGET'\" >&2\n  exit 1\nfi",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "_name": "Hook 5: Write .claude/plans/*.md 后 plan 格式自检",
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "matches(.claude/plans/*.md)",
+            "command": "FILE=\"$CLAUDE_TOOL_INPUT_FILE_PATH\"\nif ! grep -qE '^\\*\\*Goal:\\*\\*' \"$FILE\"; then\n  echo '[WARN] plan 缺少 **Goal:** 段' >&2\n  exit 0\nfi\nif grep -qE '(TBD|TODO|implement later|add appropriate error handling|similar to Task [0-9])' \"$FILE\"; then\n  echo '[BLOCKED] plan 含 No Placeholder 红线违规' >&2\n  echo '原因: rules/plan.md 禁止 TBD/TODO/implement later/similar to Task N/add appropriate error handling' >&2\n  echo '修复: 把 placeholder 展开成具体内容或删除该 task' >&2\n  exit 1\nfi",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
